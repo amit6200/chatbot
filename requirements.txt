@@ -1,4 +1,4 @@
-﻿aiohappyeyeballs==2.6.1
+aiohappyeyeballs==2.6.1
 aiohttp==3.12.0
 aiosignal==1.3.2
 annotated-types==0.7.0
@@ -40,7 +40,6 @@ markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
 multidict==6.4.4
-numpy==1.26.4
 oauthlib==3.2.2
 openai==0.28.0
 ordered-set==4.1.0
@@ -64,7 +63,7 @@ python-dateutil==2.9.0.post0
 python-http-client==3.3.7
 python-magic==0.4.27
 pytz==2025.1
-pywin32==306
+
 pywinusb==0.4.2
 requests==2.32.3
 requests-oauthlib==2.0.0
