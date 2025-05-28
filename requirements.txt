@@ -43,6 +43,7 @@ multidict==6.4.4
 oauthlib==3.2.2
 openai==0.28.0
 ordered-set==4.1.0
+python-dotenv
 packaging==24.2
 pandas==2.2.3
 propcache==0.3.1
