@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title> Suchi Semicon AI Chatbot</title>
+  <style>
+    :root {
+      --bg-color: #f1f3f6;
+      --chat-bg: #ffffff;
+      --user-msg-bg: #007bff;
+      --bot-msg-bg: #e2e8f0;
+      --user-text-color: #ffffff;
+      --bot-text-color: #1a202c;
+      --primary-btn: #28a745;
+      --border-radius: 16px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --input-border: #ccc;
+      --input-focus-border: #007bff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 20px 20px;
+      overflow: hidden;
+    }
+
+    header {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 20px 0;
+      color: #333;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .chat-container {
+      background: var(--chat-bg);
+    
+      max-width: 100%;
+      height: calc(100vh - 100px); /* full height minus header + padding */
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+      border-bottom: 1px solid #ccc;
+      background: #fafafa;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 15px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .user {
+      background: var(--user-msg-bg);
+      color: var(--user-text-color);
+      align-self: flex-end;
+      border-bottom-right-radius: 0;
+    }
+
+    .bot {
+      background: var(--bot-msg-bg);
+      color: var(--bot-text-color);
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+    }
+
+    .input-group {
+      display: flex;
+      padding: 15px 20px;
+      background: #f8f9fa;
+      gap: 15px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Text input */
+    .input-group input[type="text"] {
+      flex: 1;
+      padding: 14px 18px;
+      font-size: 16px;
+      border: 1.5px solid var(--input-border);
+      border-radius: var(--border-radius);
+      outline: none;
+      transition: border-color 0.3s;
+      min-width: 0;
+    }
+
+    .input-group input[type="text"]:focus {
+      border-color: var(--input-focus-border);
+      box-shadow: 0 0 8px rgba(0,123,255,0.3);
+    }
+
+    /* Hide the default file input */
+    .input-group input[type="file"] {
+      display: none;
+    }
+
+    /* Custom file upload button */
+    .file-upload-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      background-color: #007bff;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+      flex-shrink: 0;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .file-upload-label:hover {
+      background-color: #0056b3;
+    }
+
+    .file-upload-label:focus {
+      outline: 3px solid #0056b3;
+      outline-offset: 2px;
+    }
+
+    /* Show selected file name next to button */
+    #file-name {
+      font-size: 14px;
+      color: #555;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Send button */
+    .input-group button {
+      padding: 14px 22px;
+      font-size: 16px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: background 0.3s;
+      background: var(--primary-btn);
+      color: white;
+      flex-shrink: 0;
+      min-width: 90px;
+      font-weight: 600;
+    }
+
+    .input-group button:disabled {
+      background: #94d3a2;
+      cursor: not-allowed;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      .chat-container {
+        max-width: 100%;
+        height: calc(100vh - 120px);
+      }
+      .input-group {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .file-upload-label, button {
+        flex: 1 1 100%;
+        min-width: auto;
+      }
+      #file-name {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>Suchi Semicon AI Chatbot </header>
+
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+    <div class="input-group">
+      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
+      
+      <!-- Hidden file input -->
+      <input type="file" id="file-input" />
+      <!-- Custom label for file input -->
+      <label for="file-input" class="file-upload-label" tabindex="0">📁 Choose File</label>
+      <div id="file-name" title=""></div>
+
+      <button id="send-btn" onclick="sendMessage()" disabled>Send</button>
+    </div>
+  </div>
+
+  <script>
+    const inputField = document.getElementById('user-input');
+    const fileInput = document.getElementById('file-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatBox = document.getElementById('chat-box');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    function updateSendButtonState() {
+      sendBtn.disabled = !(inputField.value.trim() || fileInput.files.length > 0);
+    }
+
+    inputField.addEventListener('input', updateSendButtonState);
+
+    fileInput.addEventListener('change', () => {
+      updateSendButtonState();
+      if (fileInput.files.length > 0) {
+        const name = fileInput.files[0].name;
+        fileNameDisplay.textContent = name;
+        fileNameDisplay.title = name;
+      } else {
+        fileNameDisplay.textContent = '';
+        fileNameDisplay.title = '';
+      }
+    });
+
+    inputField.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !sendBtn.disabled) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Allow keyboard accessibility for custom file input label
+    document.querySelector('.file-upload-label').addEventListener('keydown', (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    async function sendMessage() {
+      const message = inputField.value.trim();
+      const file = fileInput.files[0];
+
+      if (!message && !file) return;
+
+      displayMessage(message || "[File attached]", "user");
+
+      inputField.value = "";
+      fileInput.value = "";
+      fileNameDisplay.textContent = "";
+      updateSendButtonState();
+      sendBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('message', message);
+      if (file) {
+        formData.append('file', file);
+      }
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.reply) {
+          displayMessage(data.reply, "bot");
+        } else {
+          displayMessage("Error: " + (data.error || "Unknown error"), "bot");
+        }
+      } catch (err) {
+        displayMessage("Failed to connect to server.", "bot");
+      } finally {
+        sendBtn.disabled = false;
+        scrollChatToBottom();
+      }
+    }
+
+    function displayMessage(text, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `message ${sender}`;
+      msgDiv.textContent = text;
+      chatBox.appendChild(msgDiv);
+      scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Initialize button state on load
+    updateSendButtonState();
+  </script>
+
+</body>
+</html>
