@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__, template_folder="template")
 
 # Your OpenRouter API key (use env var or replace below)
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
